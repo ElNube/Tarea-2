@@ -3,7 +3,7 @@
  * @author Marcelo Alfredo Paz Pezo
  * @firma …ᘛ⁐̤ᕐᐷ ICINF UBB
  * @brief 
- * @version 0.1.1
+ * @version 0.1.2
  * @date 2022-08-09
  * 
  * @copyright Copyright (c) 2022 
@@ -95,7 +95,7 @@ void recorrerFila(FILA f);
 
 int main(){
 	/* Declaracion de variables */
-	int menu, n, i, valor, total = 0, eliminado;
+	int menu, n, i; // valor, total = 0, eliminado;
 	/* Inicializa el árbol */
 	NODO raiz = NULL;
 	
@@ -105,12 +105,14 @@ int main(){
 	do
 	{
 		printf("====> MENU <====\n");
-		printf("1) Cantida 'n' de puntos a incluir en el arbol.\n");
+		printf("1) Cantidad 'n' de puntos a incluir en el arbol.\n");
 		printf("2) Leer coords. punto base.\n");
 		printf("3) Leer coords. de los 'n' puntos.\n");
 		printf("4) Mostrar punto mas lejano.\n");
 		printf("5) Mostrar el listado del el punto mas cercano a el mas lejano del punto base.\n");
-		printf("6) Salir.\n");
+		printf("6) Eliminar un punto y mostrar coords. del punto eliminado.\n");
+		printf("7) Salir.\n");
+		printf("OPCION--> ");
 		scanf("%d", &menu);
 
 		switch (menu) {
@@ -124,9 +126,11 @@ int main(){
 			
 			case 2:
 				printf("Punto base x: ");
-				scanf("%d", &PuntoBase.x);
+				scanf("%f", &PuntoBase.x);
 				printf("Punto base y: ");
-				scanf("%d", &PuntoBase.y);
+				scanf("%f", &PuntoBase.y);
+				PuntoBase.distancia = 0;
+				insertar(&raiz, tuplaAux);
 				break;
 			
 			case 3:
@@ -135,9 +139,10 @@ int main(){
 				{
 					/* Obtiene el valor a insertar */
 					printf("Punto #%d x:", i);
-					scanf("%d", &tuplaAux.x);
+					scanf("%f", &tuplaAux.x);
 					printf("Punto #%d y:", i);
-					scanf("%d", &tuplaAux.y);
+					scanf("%f", &tuplaAux.y);
+					printf("\n");
 					
 					/* Inserción de forma iterativa */
 					//raiz = agregarNodo(raiz, valor);
@@ -154,12 +159,19 @@ int main(){
 			
 			case 5:
 				printf("\nINORDEN\n\t"); inOrden(raiz);
+				printf("\n");
 				break;
-			case 6:
-				printf("Salir\n");
-				menu = 0;
-				break;
-			
+
+			case 6:                
+				printf("-->Deseas salir? SI[1]  / NO[0]: ");
+				fflush(stdin);
+				scanf("%d", &menu);
+                if (menu == 1)
+                    menu = 0;
+				else
+					menu = -1;
+                break; 
+
 			default:
 				printf("Elija una opcion valida\n");
 				break;
@@ -253,7 +265,8 @@ NODO agregarNodo(NODO raiz, TUPLA t){
 void inOrden(NODO r){
 	if (r != NULL){
 		inOrden(r->izquierdo); 
-		printf("%d ", r->elemento);
+		printf("(%.3f, ", r->elemento.x);
+		printf("%.3f) ", r->elemento.y);
 		inOrden(r->derecho);
 	}
 }
@@ -265,7 +278,8 @@ void inOrden(NODO r){
  */
 void preOrden(NODO r){
 	if (r != NULL){
-		printf("%d ", r->elemento);
+		printf("(%.3f, ", r->elemento.x);
+		printf("%.3f) ", r->elemento.y);
 		preOrden(r->izquierdo);		
 		preOrden(r->derecho);
 	}
@@ -280,7 +294,8 @@ void postOrden(NODO r){
 	if (r != NULL){		
 		postOrden(r->izquierdo);		
 		postOrden(r->derecho);
-		printf("%d ", r->elemento);
+		printf("(%.3f, ", r->elemento.x);
+		printf("%.3f) ", r->elemento.y);
 	}
 }
 
@@ -369,7 +384,7 @@ TUPLA buscar(NODO raiz, TUPLA t){
   else if (raiz->elemento.distancia > t.distancia)
     return buscar(raiz->izquierdo, t);
   else
-    return;
+    return t;
 }
 
 /**
@@ -446,7 +461,8 @@ NODO verFrente(FILA f){
 void recorrerFila(FILA f){
 	FILA aux = f;
 	while(esVacia(aux) == 0){
-		printf("%d ", verFrente(aux)->elemento);
+		printf("(%.3f, ", verFrente(aux)->elemento.x);
+		printf("%.3f) ", verFrente(aux)->elemento.y);
 		aux = extraer(aux);
 	}
 }
