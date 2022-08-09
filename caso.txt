@@ -1,0 +1,62 @@
+Cosos de prueba para la tarea 2
+---------------------------------------------------------------
+CASO 1 (video yt profe jazna)
+n = 5
+Punto Base (5,6)
+p1 (0, 9) RAIZ
+p2 (1, 2)
+p3 (34, 5)
+p4 (2, 2)
+p5 (1, 1)
+
+Mas cercano p4 (2, 2)
+Mas alejado p3 (34, 5)
+
+INORDEN
+p4(2.000, 2.000) Distancia : 5.000
+p2(1.000, 2.000) Distancia : 5.657
+p1(0.000, 9.000) Distancia : 5.831
+p5(1.000, 1.000) Distancia : 6.403
+p3(34.000, 5.000) Distancia : 29.017
+
+---------------------------------------------------------------
+CASO 2 (raiz sin izquierda)
+
+n = 5
+Punto Base (0,0)
+p1 (1, 0) RAIZ
+p2 (5, 0)
+p3 (2, 0)
+p4 (50, 0)
+p5 (30, 0)
+
+Mas cercano p1 (1, 0) RAIZ ?
+Mas alejado p4 (50, 0)
+
+INORDEN
+p1 (1, 0) Distancia : 1.000
+p3 (2, 0) Distancia : 2.000
+p2 (5, 0) Distancia : 5.000
+p5 (30, 0) Distancia : 30.000
+p4 (50, 0) Distancia : 50.000
+
+---------------------------------------------------------------
+CASO 3 (raiz sin derecha)
+
+n = 5
+Punto Base (0,0)
+p4 (50, 0) RAIZ
+p1 (1, 0) 
+p2 (5, 0)
+p5 (30, 0)
+p3 (2, 0)
+
+Mas cercano p1 (1, 0)
+Mas alejado p4 (50, 0) RAIZ
+
+INORDEN
+p1 (1, 0) Distancia : 1.000
+p3 (2, 0) Distancia : 2.000
+p2 (5, 0) Distancia : 5.000
+p5 (30, 0) Distancia : 30.000
+p4 (50, 0) Distancia : 50.000

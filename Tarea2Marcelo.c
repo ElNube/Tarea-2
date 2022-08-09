@@ -94,7 +94,7 @@ void recorrerFila(FILA f);
 
 int main(){
 	/* Declaracion de variables */
-	int menu, n, i, validacion = 0; // valor, total = 0, eliminado;
+	int menu, n, i, valid1 = 0, valid2 = 0, valid3 = 0; // valor, total = 0, eliminado;
 	/* Inicializa el árbol */
 	NODO raiz = NULL;
 	
@@ -116,44 +116,37 @@ int main(){
 
 		switch (menu) {
 			case 1:
-				if (validacion == 0 || validacion == 1)
+				do
 				{
-					do
-					{
-						printf("Ingrese la cantidad de puntos que desea ingresar: ");
-						scanf("%d",&n);
-					} while (n<0);
-					validacion++;
-				}
-				else
-					printf("La cantidad de puntos no puede ser modificada.\n");
+					printf("Ingrese la cantidad de puntos que desea ingresar:\n\tn : ");
+					scanf("%d",&n);
+				} while (n<0);
+				valid1 = 1;
+
 				break;	
 			
 			case 2:
-				if (validacion == 0 || validacion == 1)
-				{
-					printf("Punto base x: ");
-					scanf("%f", &PuntoBase.x);
-					printf("Punto base y: ");
-					scanf("%f", &PuntoBase.y);
-					PuntoBase.distancia = 0;
-					insertar(&raiz, PuntoBase);
-					validacion++;
-				}
-				else
-					printf("La raiz no puede ser modificada.\n");
+				printf("Punto base:\n");
+				printf("\tX : ");
+				scanf("%f", &PuntoBase.x);
+				printf("\tY : ");
+				scanf("%f", &PuntoBase.y);
+				PuntoBase.distancia = 0;
+				//insertar(&raiz, PuntoBase);
+				valid2 = 1;
 				break;
 			
 			case 3:
-				if (validacion == 2)
+				if (valid1 == 1 && valid2 == 1)
 				{
 					/* Inserta n nodos en el árbol */
 					for(i=1; i <= n; i++)
 					{
 						/* Obtiene el valor a insertar */
-						printf("Punto #%d x:", i);
+						printf("Punto #%d:\n", i);
+						printf("\tX : ");
 						scanf("%f", &tuplaAux.x);
-						printf("Punto #%d y:", i);
+						printf("\tY : ");
 						scanf("%f", &tuplaAux.y);
 						printf("\n");
 						
@@ -164,16 +157,16 @@ int main(){
 						tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
 						insertar(&raiz, tuplaAux);
 					}
-					validacion++;
+					valid3 = 1;
 				}
-				else if (validacion == 3)
+				else if (valid3 == 1)
 					printf("Los puntos no pueden ser modificados");
 				else
 					printf("Debe completar 1) y 2) para continuar.\n");
 				break;	
 			
 			case 4:
-				if(validacion == 3)
+				if(valid3 == 1)
 				{
 					tuplaAux = menorValor(raiz);
 					printf("Punto mas cercano : (%.3f, %.3f) Distancia: %.3f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
@@ -186,9 +179,9 @@ int main(){
 				break;
 			
 			case 5:
-				if(validacion == 3)
+				if(valid3 == 1)
 				{
-					printf("\nINORDEN\n\t"); inOrden(raiz);
+					printf("\nINORDEN\n"); inOrden(raiz);
 					printf("\n");
 				}
 				else
@@ -196,22 +189,26 @@ int main(){
 				break;
 
 			case 6:
-				if(validacion == 3)
+				if(valid3 == 1)
 				{
-					printf("Punto base x: ");
+					printf("Punto a eliminar:\n");
+					printf("\tX : ");
 					scanf("%f", &tuplaAux.x);
-					printf("Punto base y: ");
+					printf("\tY : ");
 					scanf("%f", &tuplaAux.y);
 					tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
 					if (buscar(raiz, tuplaAux) == 1)
 					{
 						raiz = remover(raiz, tuplaAux);
+						printf("ELIMINACION EXITOSA\n");
 					}
 					else
 						printf("Proceso fallido, no se ha encontrado este punto\n.");
+					printf("\n");
 				}
 				else
 					printf("Para continuar debe completar el item 3)\n");
+				
 				break;
 
 			case 7:                
@@ -317,8 +314,7 @@ NODO agregarNodo(NODO raiz, TUPLA t){
 void inOrden(NODO r){
 	if (r != NULL){
 		inOrden(r->izquierdo); 
-		printf("(%.3f, ", r->elemento.x);
-		printf("%.3f) ", r->elemento.y);
+		printf("(%.3f, %.3f) Distancia : %.3f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
 		inOrden(r->derecho);
 	}
 }
@@ -394,7 +390,7 @@ TUPLA mayorValor(NODO raiz){
  */
 TUPLA menorValor(NODO raiz){
     if (raiz != NULL){
-        NODO auxiliar = raiz->derecho;
+        NODO auxiliar = raiz;
         while (auxiliar->izquierdo != NULL)
             auxiliar = auxiliar->izquierdo;
         return auxiliar->elemento;
