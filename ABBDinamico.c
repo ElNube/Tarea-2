@@ -13,6 +13,7 @@
 /* Estrucrtura del árbol */
 typedef struct s_nodo{
 	int elemento;
+	float x, y;
 	struct s_nodo *izquierdo, *derecho;
 } *NODO;
 
@@ -239,7 +240,7 @@ int retornarAltura(NODO raiz){
 		elem : elemento a insertar
 	@retorno: altura del arbol
 */
-void insertar(NODO *a,  elem){
+void insertar(NODO *a, int elem){
 	if (*a == NULL){
     	*a = (NODO) malloc(sizeof(struct s_nodo));
     	(*a)->elemento = elem;

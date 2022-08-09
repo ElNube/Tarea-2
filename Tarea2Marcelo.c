@@ -3,7 +3,7 @@
  * @author Marcelo Alfredo Paz Pezo
  * @firma …ᘛ⁐̤ᕐᐷ ICINF UBB
  * @brief 
- * @version 0.1.2
+ * @version 0.1.3
  * @date 2022-08-09
  * 
  * @copyright Copyright (c) 2022 
@@ -19,7 +19,7 @@ Estructura de datos
 
 
 /**	COSAS QUE HACER
- * - podria usar la distancia dentro de la tupla
+ * - podria la funcion buscar para evitar remover un valor que no existe
  * -
  */
 #include <stdio.h>
@@ -32,9 +32,7 @@ Estructura de datos
 /* Estructura del elemento */
 
 typedef struct s_tupla{
-	int distancia;
-	float x;
-	float y;
+	float distancia, x, y;
 } TUPLA;
 
 /* Estructura del árbol */
@@ -57,11 +55,11 @@ typedef struct s_fila_enlazada{
 
 /* Operaciones del árbol */
 
-NODO agregarNodo(NODO, TUPLA);//<----------------------------------------------------------------
+NODO agregarNodo(NODO, TUPLA);
 NODO remover(NODO, TUPLA);
 NODO eliminar(NODO, TUPLA);
 void insertar(NODO *, TUPLA);
-TUPLA buscar(NODO, TUPLA);
+int buscar(NODO, TUPLA);
 
 /* Recorridos por profundidad */
 
@@ -72,7 +70,8 @@ void postOrden(NODO);
 /* Funcionalidad particular sobre el árbol */
 
 void cantidadNodosHoja(NODO, int *);
-int mayorValor(NODO);
+TUPLA mayorValor(NODO);
+TUPLA menorValor(NODO);
 int retornarAltura(NODO);
 
 /* Recorrido por anchura o amplitud */
@@ -95,7 +94,7 @@ void recorrerFila(FILA f);
 
 int main(){
 	/* Declaracion de variables */
-	int menu, n, i; // valor, total = 0, eliminado;
+	int menu, n, i, validacion = 0; // valor, total = 0, eliminado;
 	/* Inicializa el árbol */
 	NODO raiz = NULL;
 	
@@ -104,68 +103,121 @@ int main(){
 
 	do
 	{
-		printf("====> MENU <====\n");
+		printf("====================> MENU <====================\n");
 		printf("1) Cantidad 'n' de puntos a incluir en el arbol.\n");
 		printf("2) Leer coords. punto base.\n");
 		printf("3) Leer coords. de los 'n' puntos.\n");
-		printf("4) Mostrar punto mas lejano.\n");
+		printf("4) Mostrar punto mas alejado y el mas cercano.\n");
 		printf("5) Mostrar el listado del el punto mas cercano a el mas lejano del punto base.\n");
 		printf("6) Eliminar un punto y mostrar coords. del punto eliminado.\n");
 		printf("7) Salir.\n");
-		printf("OPCION--> ");
+		printf("OPCION >>> ");
 		scanf("%d", &menu);
 
 		switch (menu) {
 			case 1:
-				do
+				if (validacion == 0 || validacion == 1)
 				{
-					printf("Ingrese la cantidad de nodos que desea ingresar: ");
-					scanf("%d",&n);
-				} while (n<0);
+					do
+					{
+						printf("Ingrese la cantidad de puntos que desea ingresar: ");
+						scanf("%d",&n);
+					} while (n<0);
+					validacion++;
+				}
+				else
+					printf("La cantidad de puntos no puede ser modificada.\n");
 				break;	
 			
 			case 2:
-				printf("Punto base x: ");
-				scanf("%f", &PuntoBase.x);
-				printf("Punto base y: ");
-				scanf("%f", &PuntoBase.y);
-				PuntoBase.distancia = 0;
-				insertar(&raiz, tuplaAux);
+				if (validacion == 0 || validacion == 1)
+				{
+					printf("Punto base x: ");
+					scanf("%f", &PuntoBase.x);
+					printf("Punto base y: ");
+					scanf("%f", &PuntoBase.y);
+					PuntoBase.distancia = 0;
+					insertar(&raiz, PuntoBase);
+					validacion++;
+				}
+				else
+					printf("La raiz no puede ser modificada.\n");
 				break;
 			
 			case 3:
-				/* Inserta n nodos en el árbol */
-				for(i=1; i <= n; i++)
+				if (validacion == 2)
 				{
-					/* Obtiene el valor a insertar */
-					printf("Punto #%d x:", i);
-					scanf("%f", &tuplaAux.x);
-					printf("Punto #%d y:", i);
-					scanf("%f", &tuplaAux.y);
-					printf("\n");
-					
-					/* Inserción de forma iterativa */
-					//raiz = agregarNodo(raiz, valor);
+					/* Inserta n nodos en el árbol */
+					for(i=1; i <= n; i++)
+					{
+						/* Obtiene el valor a insertar */
+						printf("Punto #%d x:", i);
+						scanf("%f", &tuplaAux.x);
+						printf("Punto #%d y:", i);
+						scanf("%f", &tuplaAux.y);
+						printf("\n");
+						
+						/* Inserción de forma iterativa */
+						//raiz = agregarNodo(raiz, valor);
 
-					/* Inserción usando recursividad */
-					tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
-					insertar(&raiz, tuplaAux);
+						/* Inserción usando recursividad */
+						tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
+						insertar(&raiz, tuplaAux);
+					}
+					validacion++;
 				}
+				else if (validacion == 3)
+					printf("Los puntos no pueden ser modificados");
+				else
+					printf("Debe completar 1) y 2) para continuar.\n");
 				break;	
 			
 			case 4:
-				printf("proximamente\n");
+				if(validacion == 3)
+				{
+					tuplaAux = menorValor(raiz);
+					printf("Punto mas cercano : (%.3f, %.3f) Distancia: %.3f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
+					
+					tuplaAux = mayorValor(raiz);
+					printf("Punto mas alejado : (%.3f, %.3f) Distancia: %.3f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
+				}
+				else
+					printf("Debe completar el item 3) para continuar.\n");
 				break;
 			
 			case 5:
-				printf("\nINORDEN\n\t"); inOrden(raiz);
-				printf("\n");
+				if(validacion == 3)
+				{
+					printf("\nINORDEN\n\t"); inOrden(raiz);
+					printf("\n");
+				}
+				else
+					printf("Para continuar debe completar el item 3)\n");
 				break;
 
-			case 6:                
+			case 6:
+				if(validacion == 3)
+				{
+					printf("Punto base x: ");
+					scanf("%f", &tuplaAux.x);
+					printf("Punto base y: ");
+					scanf("%f", &tuplaAux.y);
+					tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
+					if (buscar(raiz, tuplaAux) == 1)
+					{
+						raiz = remover(raiz, tuplaAux);
+					}
+					else
+						printf("Proceso fallido, no se ha encontrado este punto\n.");
+				}
+				else
+					printf("Para continuar debe completar el item 3)\n");
+				break;
+
+			case 7:                
 				printf("-->Deseas salir? SI[1]  / NO[0]: ");
-				fflush(stdin);
 				scanf("%d", &menu);
+				fflush(stdin);
                 if (menu == 1)
                     menu = 0;
 				else
@@ -213,7 +265,7 @@ int main(){
 	printf("\n");
 	*/
 	/* Para pausar la consola hasta que se presione una tecla cualquiera */
-	system("pause");
+	//system("pause");
 	return 0;
 }
 
@@ -324,14 +376,30 @@ void cantidadNodosHoja(NODO raiz, int *cantidad){
  * @param raiz raiz del arbol
  * @return mayor elemento almacenado en el arbol
  */
-int mayorValor(NODO raiz){
+TUPLA mayorValor(NODO raiz){
     if (raiz != NULL){
         NODO auxiliar = raiz;
         while (auxiliar->derecho != NULL)
             auxiliar = auxiliar->derecho;
-        return auxiliar->elemento.distancia;
+        return auxiliar->elemento;
     }
-    return -1;
+	return raiz->elemento;
+}
+
+/**
+ * @brief Retorna el menor valor del arbol
+ * 
+ * @param raiz raiz del arbol
+ * @return menor elemento almacenado en el arbol
+ */
+TUPLA menorValor(NODO raiz){
+    if (raiz != NULL){
+        NODO auxiliar = raiz->derecho;
+        while (auxiliar->izquierdo != NULL)
+            auxiliar = auxiliar->izquierdo;
+        return auxiliar->elemento;
+    }
+	return raiz->elemento;
 }
 
 /**
@@ -377,14 +445,14 @@ void insertar(NODO *a, TUPLA t){
  * @param t elemento a buscar
  * @return 1 en caso de exito en la busqueda y 0 en caso contrario 
  */
-TUPLA buscar(NODO raiz, TUPLA t){
-  if (raiz == NULL) return t;
+int buscar(NODO raiz, TUPLA t){
+  if (raiz == NULL) return 0;
   else if (raiz->elemento.distancia < t.distancia)
     return buscar(raiz->derecho, t);
   else if (raiz->elemento.distancia > t.distancia)
     return buscar(raiz->izquierdo, t);
   else
-    return t;
+    return 1;
 }
 
 /**
@@ -532,12 +600,12 @@ NODO unir(NODO izquierdo, NODO derecho){
  * @param eliminado valor a ser eliminado
  * @return Árbol actualizado cpn un nodo menos (en caso de que el eliminado exista) 
  */
-NODO eliminar(NODO raiz, TUPLA eliminado){
+NODO 	eliminar(NODO raiz, TUPLA eliminado){
 	if (raiz == NULL){
 		return NULL;
 	}
 	/* Verifica si el elemento está en la actual raíz */
-    if (raiz->elemento.x == eliminado.x || raiz->elemento.y == eliminado.y){
+    if (raiz->elemento.x == eliminado.x && raiz->elemento.y == eliminado.y){
 		return unir(raiz->izquierdo, raiz->derecho);
     }
 	/* Ya no estaba en el nodo raíz, por lo tanto, busca en el aub-árbol adecuado */
