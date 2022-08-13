@@ -2,26 +2,17 @@
  * @file Tarea2Marcelo
  * @author Marcelo Alfredo Paz Pezo
  * @firma …ᘛ⁐̤ᕐᐷ ICINF UBB
- * @brief 
- * @version 0.1.4
- * @date 2022-08-09
+ * @brief Programa en C que dado un punto base, y n puntos. 
+ * Se cree un Arbol binario de busqueda con las distancias 
+ * entre los n puntos y el punto base.
+ * @version 0.1.5
+ * @start_date 2022-08-09
+ * @end_date 2022-08-12
  * 
  * @copyright Copyright (c) 2022 
  * 
  */
 
-/* 
-Tarea 2 
-Estructura de datos
-@autor - Marcelo Alfredo Paz Pezo …ᘛ⁐̤ᕐᐷ ICINF UBB
-*/
-
-
-
-/**	COSAS QUE HACER
- * - podria la funcion buscar para evitar remover un valor que no existe
- * -
- */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -30,20 +21,17 @@ Estructura de datos
 #define MAX(x,y) (x>y?x:y)
 
 /* Estructura del elemento */
-
 typedef struct s_tupla{
 	float distancia, x, y;
 } TUPLA;
 
 /* Estructura del árbol */
-
 typedef struct s_nodo{
 	TUPLA elemento;
 	struct s_nodo *izquierdo, *derecho;
 } *NODO;
 
 /* Estructura para realizar el recorrido por anchura */
-
 typedef struct s_elemento{
 	NODO valor;
 	struct s_elemento *siguiente;
@@ -91,16 +79,26 @@ NODO verFrente(FILA);
 void recorrerFila(FILA f);
 
 /* Funcion principal */
-
 int main(){
 	/* Declaracion de variables */
-	int menu, n, i, valid1 = 0, valid2 = 0, valid3 = 0; // valor, total = 0, eliminado;
+	/**
+	 * @param menu 
+	 * @param n Cantidad de puntos a ingresar
+	 * @param i auxiliar para usar for
+	 * @param valid1 Validacion item 1
+	 * @param valid2 Validacion item 2
+	 * @param valid3 Validacion item 3
+	 * 
+	 * 
+	 */
+	int menu, n, i, valid1 = 0, valid2 = 0, valid3 = 0;
 	/* Inicializa el árbol */
 	NODO raiz = NULL;
 	
-	/* Declarar tupla auxiliar */
+	/* Declarar punto base y tupla auxiliar */
 	TUPLA PuntoBase, tuplaAux;
 
+	/* Menu */
 	do
 	{
 		printf("====================> MENU <====================\n");
@@ -111,32 +109,96 @@ int main(){
 		printf("5) Mostrar el listado del el punto mas cercano a el mas lejano del punto base.\n");
 		printf("6) Eliminar un punto y mostrar coords. del punto eliminado.\n");
 		printf("7) Salir.\n");
+		printf("8) Acerca de.\n");
 		printf("OPCION >>> ");
 		scanf("%d", &menu);
 
 		switch (menu) {
 			case 1:
+				/* Validar si ya se a creado el ABB ejecutado el 3) anteriormente */
+				if (valid3 == 1) {
+					printf("-->Se borraran los datos anteriores, Desea continuar? SI[1] / NO[0]: ");
+					scanf("%d", &menu);
+					if (menu == 1)
+					{
+						raiz = NULL;
+						valid1 = 0;
+						valid2 = 0;
+						valid3 = 0;
+						printf("Datos borrados con exito!!\n\n");
+					}
+					else
+					{
+						printf("\n");
+						menu = -1;
+					}
+					break;
+				}
+
 				do
 				{
 					printf("Ingrese la cantidad de puntos que desea ingresar:\n\tn : ");
 					scanf("%d",&n);
 				} while (n<0);
 				valid1 = 1;
-
+				printf("\n");
 				break;	
 			
 			case 2:
+				/* Validar si ya se a creado el ABB ejecutado el 3) anteriormente */
+				if (valid3 == 1) {
+					printf("-->Se borraran los datos anteriores, Desea continuar? SI[1] / NO[0]: ");
+					scanf("%d", &menu);
+					if (menu == 1)
+					{
+						raiz = NULL;
+						valid1 = 0;
+						valid2 = 0;
+						valid3 = 0;
+						printf("Datos borrados con exito!!\n\n");
+					}
+					else
+					{
+						menu = -1;
+						printf("\n");
+					}
+					break;
+				}
+
+				/* Ingreso de datos del punto base */
 				printf("Punto base:\n");
 				printf("\tX : ");
 				scanf("%f", &PuntoBase.x);
 				printf("\tY : ");
 				scanf("%f", &PuntoBase.y);
 				PuntoBase.distancia = 0;
-				//insertar(&raiz, PuntoBase);
 				valid2 = 1;
+				raiz = NULL;
+				printf("\n");
 				break;
 			
 			case 3:
+				/* Validar si ya se a creado el ABB ejecutado el 3) anteriormente */
+				if (valid3 == 1) {
+					printf("-->Se borraran los datos anteriores, Desea continuar? SI[1] / NO[0]: ");
+					scanf("%d", &menu);
+					if (menu == 1)
+					{
+						raiz = NULL;
+						valid1 = 0;
+						valid2 = 0;
+						valid3 = 0;
+						printf("Datos borrados con exito!!\n\n");
+					}
+					else
+					{
+						menu = -1;
+						printf("\n");
+					}
+					break;
+				}
+
+				/* Validar si se a cumplido el item 1 y 2 */
 				if (valid1 == 1 && valid2 == 1)
 				{
 					/* Inserta n nodos en el árbol */
@@ -159,36 +221,39 @@ int main(){
 					}
 					valid3 = 1;
 				}
-				else if (valid3 == 1)
-					printf("Los puntos no pueden ser modificados");
 				else
-					printf("Debe completar 1) y 2) para continuar.\n");
+					printf("Debe completar 1) y 2) para continuar.\n\n");
 				break;	
 			
 			case 4:
+				/* Validar si se a cumplido el item 3 */
 				if(valid3 == 1)
 				{
 					tuplaAux = menorValor(raiz);
-					printf("Punto mas cercano : (%.3f, %.3f) Distancia: %.3f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
+					printf("\nPunto mas cercano : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
 					
 					tuplaAux = mayorValor(raiz);
-					printf("Punto mas alejado : (%.3f, %.3f) Distancia: %.3f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
-				}
-				else
-					printf("Debe completar el item 3) para continuar.\n");
-				break;
-			
-			case 5:
-				if(valid3 == 1)
-				{
-					printf("\nINORDEN\n"); inOrden(raiz);
+					printf("Punto mas alejado : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
 					printf("\n");
 				}
 				else
-					printf("Para continuar debe completar el item 3)\n");
+					printf("Debe completar el item 3) para continuar.\n\n");
+				break;
+			
+			case 5:
+				/* Validar si se a cumplido el item 3 */
+				if(valid3 == 1)
+				{
+					printf("\nINORDEN : Punto mas cercano, hasta el mas lejano.\n");
+					inOrden(raiz);
+					printf("\n");
+				}
+				else
+					printf("Para continuar debe completar el item 3)\n\n");
 				break;
 
 			case 6:
+				/* Validar si se a cumplido el item 3 */
 				if(valid3 == 1)
 				{
 					printf("Punto a eliminar:\n");
@@ -203,66 +268,74 @@ int main(){
 						printf("ELIMINACION EXITOSA\n");
 					}
 					else
-						printf("Proceso fallido, no se ha encontrado este punto\n.");
+						printf("Proceso fallido, no se ha encontrado este punto.\n");
 					printf("\n");
 				}
 				else
-					printf("Para continuar debe completar el item 3)\n");
+					printf("Para continuar debe completar el item 3)\n\n");
 				
 				break;
 
-			case 7:                
-				printf("-->Deseas salir? SI[1]  / NO[0]: ");
+			case 7:
+				/* Salir del programa */
+				printf("-->Deseas salir? SI[1] / NO[0]: ");
 				scanf("%d", &menu);
 				fflush(stdin);
                 if (menu == 1)
-                    menu = 0;
+				{
+					printf("\nPROGRAMA FINALIZADO CON EXITO!!\n\n");
+                    menu = 7;
+					valid1 = 0;
+					valid2 = 0;
+					valid3 = 0;
+				}
 				else
 					menu = -1;
                 break; 
+			
+			case 8:
+				/* Mostrar datos acerca del programa */
+				printf("\n=================================================\n");
+				printf("Tarea 2 Estructuras de Datos\n");
+				printf("Autor : Marcelo Alfredo Paz Pezo\n");
+				printf("Version : 0.1.5\n");
+				printf("ICINF UBB\n");
+				printf("=================================================\n\n");
+                break; 
 
 			default:
-				printf("Elija una opcion valida\n");
+				printf("Elija una opcion valida\n\n");
 				break;
 		}
-	} while (menu != 0);
 
-	/*
-	// Muestra contenido del ABB usando los recorridos por profundidad
-	
-	printf("\nPREORDEN\n\t"); preOrden(raiz);
-	printf("\nPOSTORDEN\n\t"); postOrden(raiz);
+		/* Mostrar variables importantes que estan en uso */
+		if (valid3)
+		{
+			printf("<================== VARIABLES =================>\n");
+			printf("\tn = %d\n", n);
+			printf("\tP(%.2f, %.2f)\n", PuntoBase.x, PuntoBase.y);
+			printf("\tABB = [DATOS]\n");
+		}
+		else if (valid1 && valid2)
+		{
+			printf("<================== VARIABLES =================>\n");
+			printf("\tn = %d\n", n);
+			printf("\tP(%.2f, %.2f)\n", PuntoBase.x, PuntoBase.y);
+		}
+		else if (valid2)
+		{
+			printf("<================== VARIABLES =================>\n");
+			printf("\tP(%.2f, %.2f)\n", PuntoBase.x, PuntoBase.y);
+		}
+		else if (valid1)
+		{
+			printf("<================== VARIABLES =================>\n");
+			printf("\tn = %d\n", n);
+		}
+		
+		
+	} while (menu != 7);
 
-	// Obtiene la cantidad de nodos hojas que tiene el árbol
-	cantidadNodosHoja(raiz, &total);
-	printf("\nArbol tiene %d hojas\n", total);
-	// Obtiene el mayor valor almacenado en el árbol
-	printf("\nMayor valor : %d\n", mayorValor(raiz));
-	// Obtiene la altura del árbol
-	printf("\nAltura : %d\n", retornarAltura(raiz));
-
-	// Testea de funcionalidad de búsqueda
-	printf("Valor buscado: ");
-	scanf("%d", &valor);
-	printf("%d %s existe\n", valor, (buscar(raiz, tuplaAux)==1?"SI":"NO"));	
-
-	// Muestra el recorrido en anchura
-	printf("Inicio Recorrido en anchura ...\n");
-	recorridoAnchura(raiz);
-	printf("\nFin Recorrido en anchura ...\n");
-
-	// Prueba la funcionalidad de eliminación de un nodo
-
-	printf("Valor a eliminar : ");
-	scanf("%d", &eliminado);
-	raiz = remover(raiz, eliminado);
-	// Vuelve a mostrar el recorrido por profundidad IN-ORDEN
-	printf("Resultado despues de eliminar ...\n");
-	inOrden(raiz);
-	printf("\n");
-	*/
-	/* Para pausar la consola hasta que se presione una tecla cualquiera */
-	//system("pause");
 	return 0;
 }
 
@@ -314,7 +387,7 @@ NODO agregarNodo(NODO raiz, TUPLA t){
 void inOrden(NODO r){
 	if (r != NULL){
 		inOrden(r->izquierdo); 
-		printf("(%.3f, %.3f) Distancia : %.3f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
+		printf("(%.2f, %.2f) Distancia : %.2f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
 		inOrden(r->derecho);
 	}
 }
@@ -326,8 +399,7 @@ void inOrden(NODO r){
  */
 void preOrden(NODO r){
 	if (r != NULL){
-		printf("(%.3f, ", r->elemento.x);
-		printf("%.3f) ", r->elemento.y);
+		printf("(%.2f, %.2f) Distancia : %.2f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
 		preOrden(r->izquierdo);		
 		preOrden(r->derecho);
 	}
@@ -342,8 +414,7 @@ void postOrden(NODO r){
 	if (r != NULL){		
 		postOrden(r->izquierdo);		
 		postOrden(r->derecho);
-		printf("(%.3f, ", r->elemento.x);
-		printf("%.3f) ", r->elemento.y);
+		printf("(%.2f, %.2f) Distancia : %.2f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
 	}
 }
 
@@ -525,8 +596,8 @@ NODO verFrente(FILA f){
 void recorrerFila(FILA f){
 	FILA aux = f;
 	while(esVacia(aux) == 0){
-		printf("(%.3f, ", verFrente(aux)->elemento.x);
-		printf("%.3f) ", verFrente(aux)->elemento.y);
+		printf("(%.2f, ", verFrente(aux)->elemento.x);
+		printf("%.2f) ", verFrente(aux)->elemento.y);
 		aux = extraer(aux);
 	}
 }
@@ -596,7 +667,7 @@ NODO unir(NODO izquierdo, NODO derecho){
  * @param eliminado valor a ser eliminado
  * @return Árbol actualizado cpn un nodo menos (en caso de que el eliminado exista) 
  */
-NODO 	eliminar(NODO raiz, TUPLA eliminado){
+NODO eliminar(NODO raiz, TUPLA eliminado){
 	if (raiz == NULL){
 		return NULL;
 	}
