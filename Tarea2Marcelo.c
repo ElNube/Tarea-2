@@ -5,9 +5,10 @@
  * @brief Programa en C que dado un punto base, y n puntos. 
  * Se cree un Arbol binario de busqueda con las distancias 
  * entre los n puntos y el punto base.
- * @version 0.1.6
+ * 
+ * @version 0.1.7
  * @start_date 2022-08-09
- * @end_date 2022-08-12
+ * @end_date 2022-08-18
  * 
  * @copyright Copyright (c) 2022 
  * 
@@ -94,6 +95,7 @@ int main(){
 	 * 
 	 */
 	int menu, n, i, valid1 = 0, valid2 = 0, valid3 = 0, valid4 = 0;
+	
 	/* Inicializa el árbol */
 	NODO raiz = NULL;
 	
