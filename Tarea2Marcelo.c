@@ -5,7 +5,7 @@
  * @brief Programa en C que dado un punto base, y n puntos. 
  * Se cree un Arbol binario de busqueda con las distancias 
  * entre los n puntos y el punto base.
- * @version 0.1.5
+ * @version 0.1.6
  * @start_date 2022-08-09
  * @end_date 2022-08-12
  * 
@@ -88,10 +88,12 @@ int main(){
 	 * @param valid1 Validacion item 1
 	 * @param valid2 Validacion item 2
 	 * @param valid3 Validacion item 3
+	 * @param valid4 Validacion Si el punto ya existe dentro del arbol
+	 * 
 	 * 
 	 * 
 	 */
-	int menu, n, i, valid1 = 0, valid2 = 0, valid3 = 0;
+	int menu, n, i, valid1 = 0, valid2 = 0, valid3 = 0, valid4 = 0;
 	/* Inicializa el árbol */
 	NODO raiz = NULL;
 	
@@ -111,6 +113,7 @@ int main(){
 		printf("7) Salir.\n");
 		printf("8) Acerca de.\n");
 		printf("OPCION >>> ");
+		fflush(stdin);
 		scanf("%d", &menu);
 
 		switch (menu) {
@@ -139,7 +142,9 @@ int main(){
 				{
 					printf("Ingrese la cantidad de puntos que desea ingresar:\n\tn : ");
 					scanf("%d",&n);
-				} while (n<0);
+					if (n<1)
+						printf("Valor invalido.\n");
+				} while (n<1);
 				valid1 = 1;
 				printf("\n");
 				break;	
@@ -205,18 +210,33 @@ int main(){
 					for(i=1; i <= n; i++)
 					{
 						/* Obtiene el valor a insertar */
-						printf("Punto #%d:\n", i);
-						printf("\tX : ");
-						scanf("%f", &tuplaAux.x);
-						printf("\tY : ");
-						scanf("%f", &tuplaAux.y);
-						printf("\n");
+						do
+						{
+							printf("Punto #%d:\n", i);
+							printf("\tX : ");
+							scanf("%f", &tuplaAux.x);
+							printf("\tY : ");
+							scanf("%f", &tuplaAux.y);
+							printf("\n");
+							tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
+							if (buscar(raiz, tuplaAux) == 1)
+							{
+								printf("El punto ya existe dentro del arbol. Desea guardarlo nuevamente? SI[1] / NO[0]:");
+								scanf("%d", &menu);
+								printf("\n");
+								if (menu == 0)
+									valid4 = 1;
+								else
+									valid4 = 0;
+							}
+						} while (valid4 == 1);
+						
+						
 						
 						/* Inserción de forma iterativa */
 						//raiz = agregarNodo(raiz, valor);
 
 						/* Inserción usando recursividad */
-						tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
 						insertar(&raiz, tuplaAux);
 					}
 					valid3 = 1;
@@ -229,12 +249,17 @@ int main(){
 				/* Validar si se a cumplido el item 3 */
 				if(valid3 == 1)
 				{
-					tuplaAux = menorValor(raiz);
-					printf("\nPunto mas cercano : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
-					
-					tuplaAux = mayorValor(raiz);
-					printf("Punto mas alejado : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
-					printf("\n");
+					if (raiz == NULL)
+						printf("Arbol vacio.\n");
+					else
+					{
+						tuplaAux = menorValor(raiz);
+						printf("\nPunto mas cercano : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
+						
+						tuplaAux = mayorValor(raiz);
+						printf("Punto mas alejado : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
+						printf("\n");
+					}
 				}
 				else
 					printf("Debe completar el item 3) para continuar.\n\n");
@@ -246,6 +271,8 @@ int main(){
 				{
 					printf("\nINORDEN : Punto mas cercano, hasta el mas lejano.\n");
 					inOrden(raiz);
+					if (raiz == NULL)
+						printf("Arbol vacio.\n");
 					printf("\n");
 				}
 				else
@@ -256,14 +283,18 @@ int main(){
 				/* Validar si se a cumplido el item 3 */
 				if(valid3 == 1)
 				{
+					/* Ingresar valores del punto */
 					printf("Punto a eliminar:\n");
 					printf("\tX : ");
 					scanf("%f", &tuplaAux.x);
 					printf("\tY : ");
 					scanf("%f", &tuplaAux.y);
 					tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
+					
+					/* Validar que el punto exista usando sus coords. y su distancia al punto base*/
 					if (buscar(raiz, tuplaAux) == 1)
 					{
+						/* Eliminar el punto */
 						raiz = remover(raiz, tuplaAux);
 						printf("ELIMINACION EXITOSA\n");
 					}
@@ -501,7 +532,7 @@ void insertar(NODO *a, TUPLA t){
   	}
   	else if ((*a)->elemento.distancia < t.distancia)
     	insertar(&(*a)->derecho, t);
-  	else if ((*a)->elemento.distancia > t.distancia)
+  	else if ((*a)->elemento.distancia >= t.distancia)
     	insertar(&(*a)->izquierdo, t);
 }
 
@@ -513,13 +544,15 @@ void insertar(NODO *a, TUPLA t){
  * @return 1 en caso de exito en la busqueda y 0 en caso contrario 
  */
 int buscar(NODO raiz, TUPLA t){
-  if (raiz == NULL) return 0;
-  else if (raiz->elemento.distancia < t.distancia)
-    return buscar(raiz->derecho, t);
-  else if (raiz->elemento.distancia > t.distancia)
-    return buscar(raiz->izquierdo, t);
-  else
-    return 1;
+	if (raiz == NULL) return 0;
+	else if (raiz->elemento.x == t.x && raiz->elemento.y == t.y)
+		return 1;
+	else if (raiz->elemento.distancia < t.distancia)
+		return buscar(raiz->derecho, t);
+	else if (raiz->elemento.distancia >= t.distancia)
+		return buscar(raiz->izquierdo, t);
+	else 
+		return 1;
 }
 
 /**
@@ -676,7 +709,7 @@ NODO eliminar(NODO raiz, TUPLA eliminado){
 		return unir(raiz->izquierdo, raiz->derecho);
     }
 	/* Ya no estaba en el nodo raíz, por lo tanto, busca en el aub-árbol adecuado */
-	if (raiz->elemento.distancia > eliminado.distancia){
+	if (raiz->elemento.distancia >= eliminado.distancia){
 		raiz->izquierdo = eliminar(raiz->izquierdo, eliminado);
 	}
 	else{
