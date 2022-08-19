@@ -6,9 +6,9 @@
  * Se cree un Arbol binario de busqueda con las distancias 
  * entre los n puntos y el punto base.
  * 
- * @version 0.1.7
+ * @version 0.1.8
  * @start_date 2022-08-09
- * @end_date 2022-08-18
+ * @end_date 2022-08-19
  * 
  * @copyright Copyright (c) 2022 
  * 
@@ -124,6 +124,7 @@ int main(){
 				if (valid3 == 1) {
 					printf("-->Se borraran los datos anteriores, Desea continuar? SI[1] / NO[0]: ");
 					scanf("%d", &menu);
+					/* Confirmar la seleccion */
 					if (menu == 1)
 					{
 						raiz = NULL;
@@ -156,6 +157,7 @@ int main(){
 				if (valid3 == 1) {
 					printf("-->Se borraran los datos anteriores, Desea continuar? SI[1] / NO[0]: ");
 					scanf("%d", &menu);
+					/* Confirmar la seleccion */
 					if (menu == 1)
 					{
 						raiz = NULL;
@@ -189,6 +191,7 @@ int main(){
 				if (valid3 == 1) {
 					printf("-->Se borraran los datos anteriores, Desea continuar? SI[1] / NO[0]: ");
 					scanf("%d", &menu);
+					/* Confirmar la seleccion */
 					if (menu == 1)
 					{
 						raiz = NULL;
@@ -221,11 +224,14 @@ int main(){
 							scanf("%f", &tuplaAux.y);
 							printf("\n");
 							tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
+							
+							/* Verificar si el punto ya existe dentro del arbol */
 							if (buscar(raiz, tuplaAux) == 1)
 							{
 								printf("El punto ya existe dentro del arbol. Desea guardarlo nuevamente? SI[1] / NO[0]:");
 								scanf("%d", &menu);
 								printf("\n");
+								/* Confirmar la seleccion */
 								if (menu == 0)
 									valid4 = 1;
 								else
@@ -251,10 +257,12 @@ int main(){
 				/* Validar si se a cumplido el item 3 */
 				if(valid3 == 1)
 				{
+					/* Validar que el arbol este vacio */
 					if (raiz == NULL)
-						printf("Arbol vacio.\n");
+						printf("Arbol vacio.\n\n");
 					else
 					{
+						/* Mostrar datos */
 						tuplaAux = menorValor(raiz);
 						printf("\nPunto mas cercano : (%.2f, %.2f) Distancia: %.2f\n", tuplaAux.x, tuplaAux.y, tuplaAux.distancia);
 						
@@ -285,24 +293,36 @@ int main(){
 				/* Validar si se a cumplido el item 3 */
 				if(valid3 == 1)
 				{
-					/* Ingresar valores del punto */
-					printf("Punto a eliminar:\n");
-					printf("\tX : ");
-					scanf("%f", &tuplaAux.x);
-					printf("\tY : ");
-					scanf("%f", &tuplaAux.y);
-					tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
-					
-					/* Validar que el punto exista usando sus coords. y su distancia al punto base*/
-					if (buscar(raiz, tuplaAux) == 1)
+					if (raiz == NULL)
 					{
-						/* Eliminar el punto */
-						raiz = remover(raiz, tuplaAux);
-						printf("ELIMINACION EXITOSA\n");
+						printf("Arbol vacio.\n\n");
 					}
 					else
-						printf("Proceso fallido, no se ha encontrado este punto.\n");
-					printf("\n");
+					{
+						/* Ingresar valores del punto */
+						printf("Punto a eliminar:\n");
+						printf("\tX : ");
+						scanf("%f", &tuplaAux.x);
+						printf("\tY : ");
+						scanf("%f", &tuplaAux.y);
+						tuplaAux.distancia = sqrt(pow(tuplaAux.x - PuntoBase.x, 2) + pow(tuplaAux.y - PuntoBase.y, 2));
+						
+						/* Validar que el punto exista usando sus coords. y su distancia al punto base*/
+						if (buscar(raiz, tuplaAux) == 1)
+						{
+							/* Eliminar el punto */
+							raiz = remover(raiz, tuplaAux);
+							printf("ELIMINACION EXITOSA\n");
+							printf("Arbol Actualizado: INORDEN\n");
+							if (raiz == NULL)
+								printf("Arbol Vacio.\n");
+							else 
+								inOrden(raiz);
+						}
+						else
+							printf("Proceso fallido, no se ha encontrado este punto.\n");
+						printf("\n");
+					}
 				}
 				else
 					printf("Para continuar debe completar el item 3)\n\n");
@@ -314,6 +334,7 @@ int main(){
 				printf("-->Deseas salir? SI[1] / NO[0]: ");
 				scanf("%d", &menu);
 				fflush(stdin);
+				/* Confirmar la seleccion */
                 if (menu == 1)
 				{
 					printf("\nPROGRAMA FINALIZADO CON EXITO!!\n\n");
@@ -331,7 +352,7 @@ int main(){
 				printf("\n=================================================\n");
 				printf("Tarea 2 Estructuras de Datos\n");
 				printf("Autor : Marcelo Alfredo Paz Pezo\n");
-				printf("Version : 0.1.5\n");
+				printf("Version : 0.1.8\n");
 				printf("ICINF UBB\n");
 				printf("=================================================\n\n");
                 break; 
@@ -341,13 +362,20 @@ int main(){
 				break;
 		}
 
-		/* Mostrar variables importantes que estan en uso */
-		if (valid3)
+		/* Mostrar variables importantes que estan en uso segun el caso necesario */
+		if (valid3 && raiz != NULL)
 		{
 			printf("<================== VARIABLES =================>\n");
 			printf("\tn = %d\n", n);
 			printf("\tP(%.2f, %.2f)\n", PuntoBase.x, PuntoBase.y);
 			printf("\tABB = [DATOS]\n");
+		}
+		else if (valid3)
+		{
+			printf("<================== VARIABLES =================>\n");
+			printf("\tn = %d\n", n);
+			printf("\tP(%.2f, %.2f)\n", PuntoBase.x, PuntoBase.y);
+			printf("\tABB = [VACIO]\n");
 		}
 		else if (valid1 && valid2)
 		{
@@ -389,23 +417,32 @@ NODO agregarNodo(NODO raiz, TUPLA t){
 	nuevo->derecho = NULL;
 
 	/* Verifica si es el primer nodo */
-	if (raiz == NULL){
+	if (raiz == NULL)
+	{
 		raiz = nuevo;
 	} 
-	else{
+	else
+	{
 		/* De forma iterativa busca el lugar "correcto" del nuevo elemento */
 		auxiliar = raiz;
-        while (auxiliar != NULL){
+        while (auxiliar != NULL)
+		{
             anterior = auxiliar;
-            if (t.distancia < auxiliar->elemento.distancia){
+            if (t.distancia < auxiliar->elemento.distancia)
+			{
                 auxiliar = auxiliar->izquierdo;
-            }else{
+            }
+			else
+			{
                 auxiliar = auxiliar->derecho;
             }
         }
-        if (t.distancia < anterior->elemento.distancia){
+        if (t.distancia < anterior->elemento.distancia)
+		{
             anterior->izquierdo = nuevo;
-        }else{
+        }
+		else
+		{
             anterior->derecho = nuevo;
         }
 	}
@@ -418,7 +455,8 @@ NODO agregarNodo(NODO raiz, TUPLA t){
  * @param r raiz del arbol
  */
 void inOrden(NODO r){
-	if (r != NULL){
+	if (r != NULL)
+	{
 		inOrden(r->izquierdo); 
 		printf("(%.2f, %.2f) Distancia : %.2f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
 		inOrden(r->derecho);
@@ -431,7 +469,8 @@ void inOrden(NODO r){
  * @param r raiz del arbol
  */
 void preOrden(NODO r){
-	if (r != NULL){
+	if (r != NULL)
+	{
 		printf("(%.2f, %.2f) Distancia : %.2f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
 		preOrden(r->izquierdo);		
 		preOrden(r->derecho);
@@ -444,7 +483,8 @@ void preOrden(NODO r){
  * @param r raiz del arbol
  */
 void postOrden(NODO r){
-	if (r != NULL){		
+	if (r != NULL)
+	{		
 		postOrden(r->izquierdo);		
 		postOrden(r->derecho);
 		printf("(%.2f, %.2f) Distancia : %.2f\n", r->elemento.x, r->elemento.y, r->elemento.distancia);
@@ -460,7 +500,8 @@ void postOrden(NODO r){
  * @return : por referencia la cantidad de nodos hoja
  */
 void cantidadNodosHoja(NODO raiz, int *cantidad){    
-    if (raiz != NULL) {
+    if (raiz != NULL)
+	{
         if (raiz->izquierdo == NULL && raiz->derecho == NULL)
             (*cantidad)++;
 		/* Calcula las hojas de subarbol izquierdo */
@@ -477,8 +518,10 @@ void cantidadNodosHoja(NODO raiz, int *cantidad){
  * @return mayor elemento almacenado en el arbol
  */
 TUPLA mayorValor(NODO raiz){
-    if (raiz != NULL){
+    if (raiz != NULL)
+	{
         NODO auxiliar = raiz;
+		/* Navegar por el lado derecho pues este siempre es el mayor segun la estructura dada */
         while (auxiliar->derecho != NULL)
             auxiliar = auxiliar->derecho;
         return auxiliar->elemento;
@@ -493,8 +536,10 @@ TUPLA mayorValor(NODO raiz){
  * @return menor elemento almacenado en el arbol
  */
 TUPLA menorValor(NODO raiz){
-    if (raiz != NULL){
+    if (raiz != NULL)
+	{
         NODO auxiliar = raiz;
+		/* Navegar por el lado izquierdo pues este siempre es el menor segun la estructura dada */
         while (auxiliar->izquierdo != NULL)
             auxiliar = auxiliar->izquierdo;
         return auxiliar->elemento;
@@ -509,7 +554,8 @@ TUPLA menorValor(NODO raiz){
  * @return altura del arbol
  */
 int retornarAltura(NODO raiz){
-    if (raiz != NULL){
+    if (raiz != NULL)
+	{
         return 1 + MAX(retornarAltura(raiz->izquierdo)
         ,retornarAltura(raiz->derecho));
     }
@@ -582,7 +628,8 @@ FILA agregar(FILA f, NODO valor){
 	nuevo->valor = valor;
 	nuevo->siguiente = NULL;
 	/* Verifica si hay otros elementos */
-	if (f.frente != NULL){
+	if (f.frente != NULL)
+	{
 		f.ultimo->siguiente = nuevo;
 		f.ultimo = nuevo;
 	}
@@ -649,15 +696,19 @@ void recorridoAnchura(NODO raiz){
 
 	NODO aux = raiz;
 	
-	if (raiz != NULL){
+	if (raiz != NULL)
+	{
 		a = agregar(a, raiz);
-		while(esVacia(a) == 0){			
+		while(esVacia(a) == 0)
+		{			
 			b = agregar(b, (aux = verFrente(a)));
 			a = extraer(a);			
-			if (aux->izquierdo != NULL){
+			if (aux->izquierdo != NULL)
+			{
 				a = agregar(a, aux->izquierdo);
 			}
-			if (aux->derecho != NULL){			
+			if (aux->derecho != NULL)
+			{			
 				a = agregar(a, aux->derecho);				
 			}			
 		}		
@@ -703,18 +754,22 @@ NODO unir(NODO izquierdo, NODO derecho){
  * @return Árbol actualizado cpn un nodo menos (en caso de que el eliminado exista) 
  */
 NODO eliminar(NODO raiz, TUPLA eliminado){
-	if (raiz == NULL){
+	if (raiz == NULL)
+	{
 		return NULL;
 	}
 	/* Verifica si el elemento está en la actual raíz */
-    if (raiz->elemento.x == eliminado.x && raiz->elemento.y == eliminado.y){
+    if (raiz->elemento.x == eliminado.x && raiz->elemento.y == eliminado.y)
+	{
 		return unir(raiz->izquierdo, raiz->derecho);
     }
 	/* Ya no estaba en el nodo raíz, por lo tanto, busca en el aub-árbol adecuado */
-	if (raiz->elemento.distancia >= eliminado.distancia){
+	if (raiz->elemento.distancia >= eliminado.distancia)
+	{
 		raiz->izquierdo = eliminar(raiz->izquierdo, eliminado);
 	}
-	else{
+	else
+	{
 		raiz->derecho = eliminar(raiz->derecho, eliminado);
 	}
 	return raiz;
